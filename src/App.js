@@ -1,22 +1,13 @@
-import logo from './logo.svg';
+import atreides from './assets/atreides.svg';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <img src={atreides} className="App-logo" alt="logo" />
+        <div>THE SPICE MUST FLOW</div>
+        <div className='App-link'>Coming Soon</div>
       </header>
     </div>
   );

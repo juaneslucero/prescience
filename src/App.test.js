@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders iconic line', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  const pElement = screen.getByText(/THE SPICE MUST FLOW/i);
+  expect(pElement).toBeInTheDocument();
 });
