@@ -1,7 +1,8 @@
+import React from 'react';
 import atreides from './assets/atreides.svg';
 import './App.css';
 
-function App() {
+const App: React.FC = () => {
   return (
     <div className="App">
       <header className="App-header">
