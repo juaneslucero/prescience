@@ -6,6 +6,6 @@ export const ENEMY_HOUSES_NAMES = [
     'Spacing Guild',
     'Ixians',
     'Tleilaxu',
-];
+] as const;
 
-export const ALL_HOUSES_NAMES = ['Atreides', ENEMY_HOUSES_NAMES];
+export const ALL_HOUSES_NAMES = ['Atreides', ...ENEMY_HOUSES_NAMES] as const;
