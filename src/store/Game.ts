@@ -1,40 +1,58 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ENEMY_HOUSES_NAMES } from 'data/Houses';
-import { EnabledHouses, EnemyHouseName, GameState } from './Types';
+import { EnemyHouseName, Game, GameParams, Houses } from './Types';
 
-export const initialEnabledHouses: EnabledHouses = ENEMY_HOUSES_NAMES.reduce(
-    (acc, house) => ({ [house]: false, ...acc }),
-    {} as EnabledHouses,
+const initiaEnemyHousesState: Houses = ENEMY_HOUSES_NAMES.reduce(
+    (acc, house) => ({
+        [house]: {
+            name: house,
+            cards: [],
+            unknownCards: [],
+            active: false,
+            showCards: false,
+        },
+        ...acc,
+    }),
+    {} as Houses,
 );
 
-export const initialState: GameState = {
+const initiaHousesState: Houses = {
+    ...initiaEnemyHousesState,
+    Atreides: {
+        name: 'Atreides',
+        cards: [],
+        unknownCards: [],
+        active: true,
+        showCards: false,
+    },
+};
+
+export const initialState: Game = {
+    started: false,
     expansionCards: false,
     deckTracking: false,
-    houses: initialEnabledHouses,
+    houses: initiaHousesState,
 };
 
 export const gameSlice = createSlice({
     name: 'game',
     initialState,
     reducers: {
-        toggleExpansionCards: (state) => {
-            state.expansionCards = !state.expansionCards;
-        },
-        toggleDeckTracking: (state) => {
-            state.deckTracking = !state.deckTracking;
-        },
-        toggleHouse: (state, house: PayloadAction<EnemyHouseName>) => {
-            state.houses[house.payload] = !state.houses[house.payload];
+        startGame: (state, gameParams: PayloadAction<GameParams>) => {
+            const { expansionCards, deckTracking, activeHouses } =
+                gameParams.payload;
+            state.started = true;
+            state.expansionCards = expansionCards;
+            state.deckTracking = deckTracking;
+
+            Object.entries(activeHouses).forEach(([house, active]) => {
+                state.houses[house as EnemyHouseName].active = active;
+            });
         },
         resetGame: () => initialState,
     },
 });
 
-export const {
-    toggleExpansionCards,
-    toggleDeckTracking,
-    toggleHouse,
-    resetGame,
-} = gameSlice.actions;
+export const { startGame, resetGame } = gameSlice.actions;
 
 export const gameReducer = gameSlice.reducer;

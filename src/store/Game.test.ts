@@ -1,77 +1,129 @@
 import { ENEMY_HOUSES_NAMES } from 'data/Houses';
-import {
-    gameReducer,
-    initialState,
-    resetGame,
-    toggleDeckTracking,
-    toggleExpansionCards,
-    toggleHouse,
-} from './Game';
-import { GameState } from './Types';
+import { gameReducer, initialState, resetGame, startGame } from './Game';
+import { ActiveHouses, Game, GameParams } from './Types';
 
-describe('Tests toggleExpansionCards reducer', () => {
-    it('Test toggle expansion cards: false -> true', () => {
-        const oldstate: GameState = { ...initialState, expansionCards: false };
-        const newState: GameState = gameReducer(
-            oldstate,
-            toggleExpansionCards(),
+const initialGameParams: GameParams = {
+    expansionCards: false,
+    deckTracking: false,
+    activeHouses: ENEMY_HOUSES_NAMES.reduce(
+        (acc, house) => ({ [house]: false, ...acc }),
+        {} as ActiveHouses,
+    ),
+};
+
+describe('Tests startGame reducer', () => {
+    it('Test set expansion cards to false', () => {
+        const params: GameParams = {
+            ...initialGameParams,
+            expansionCards: false,
+        };
+        const newState: Game = gameReducer(initialState, startGame(params));
+        expect(newState).toEqual({
+            ...initialState,
+            started: true,
+            expansionCards: false,
+        });
+    });
+
+    it('Test set expansion cards to true', () => {
+        const params: GameParams = {
+            ...initialGameParams,
+            expansionCards: true,
+        };
+        const newState: Game = gameReducer(initialState, startGame(params));
+        expect(newState).toEqual({
+            ...initialState,
+            started: true,
+            expansionCards: true,
+        });
+    });
+
+    it('Test set deck tracking to false', () => {
+        const params: GameParams = {
+            ...initialGameParams,
+            deckTracking: false,
+        };
+        const newState: Game = gameReducer(initialState, startGame(params));
+        expect(newState).toEqual({
+            ...initialState,
+            started: true,
+            deckTracking: false,
+        });
+    });
+
+    it('Test set deck tracking to true', () => {
+        const params: GameParams = {
+            ...initialGameParams,
+            deckTracking: true,
+        };
+        const newState: Game = gameReducer(initialState, startGame(params));
+        expect(newState).toEqual({
+            ...initialState,
+            started: true,
+            deckTracking: true,
+        });
+    });
+
+    it('Test set Atreides as active', () => {
+        const newState: Game = gameReducer(
+            initialState,
+            startGame(initialGameParams),
         );
-        expect(newState).toEqual({ ...oldstate, expansionCards: true });
+        expect(newState).toEqual({
+            ...initialState,
+            started: true,
+            houses: {
+                ...initialState.houses,
+                Atreides: {
+                    ...initialState.houses.Atreides,
+                    active: true,
+                },
+            },
+        });
     });
 
-    it('Test toggle expansion cards: true -> false', () => {
-        const oldstate: GameState = { ...initialState, expansionCards: true };
-        const newState: GameState = gameReducer(
-            oldstate,
-            toggleExpansionCards(),
-        );
-        expect(newState).toEqual({ ...oldstate, expansionCards: false });
-    });
-});
-
-describe('Tests toggleDeckTracking reducer', () => {
-    it('Test toggle deck tracking: false -> true', () => {
-        const oldstate: GameState = { ...initialState, deckTracking: false };
-        const newState: GameState = gameReducer(oldstate, toggleDeckTracking());
-        expect(newState).toEqual({ ...oldstate, deckTracking: true });
-    });
-
-    it('Test toggle deck tracking: true -> false', () => {
-        const oldstate: GameState = { ...initialState, deckTracking: true };
-        const newState: GameState = gameReducer(oldstate, toggleDeckTracking());
-        expect(newState).toEqual({ ...oldstate, deckTracking: false });
-    });
-});
-
-describe('Tests toggleHouse reducer', () => {
     ENEMY_HOUSES_NAMES.forEach((house) => {
-        it(`Test toggle ${house}: false -> true`, () => {
-            const oldstate: GameState = {
-                ...initialState,
-                houses: { ...initialState.houses, [house]: false },
+        it(`Test set ${house} as inactive`, () => {
+            const params: GameParams = {
+                ...initialGameParams,
+                activeHouses: {
+                    ...initialGameParams.activeHouses,
+                    [house]: false,
+                },
             };
-            const newState: GameState = gameReducer(
-                oldstate,
-                toggleHouse(house),
-            );
+            const newState: Game = gameReducer(initialState, startGame(params));
             expect(newState).toEqual({
                 ...initialState,
-                houses: { ...initialState.houses, [house]: true },
+                started: true,
+                houses: {
+                    ...initialState.houses,
+                    [house]: {
+                        ...initialState.houses[house],
+                        active: false,
+                    },
+                },
             });
         });
 
-        it(`Test toggle ${house}: true -> false`, () => {
-            const oldstate: GameState = {
-                ...initialState,
-                houses: { ...initialState.houses, [house]: true },
+        it(`Test toggle ${house} as active`, () => {
+            const params: GameParams = {
+                ...initialGameParams,
+                activeHouses: {
+                    ...initialGameParams.activeHouses,
+                    [house]: true,
+                },
             };
-            const newState: GameState = gameReducer(
-                oldstate,
-                toggleHouse(house),
-            );
+            const newState: Game = gameReducer(initialState, startGame(params));
             expect(newState).toEqual({
                 ...initialState,
-                houses: { ...initialState.houses, [house]: false },
+                started: true,
+                houses: {
+                    ...initialState.houses,
+                    [house]: {
+                        ...initialState.houses[house],
+                        active: true,
+                    },
+                },
             });
         });
     });
@@ -79,21 +131,13 @@ describe('Tests toggleHouse reducer', () => {
 
 describe('Tests resetGame reducer', () => {
     it('Test reset game', () => {
-        let newState: GameState = gameReducer(
-            initialState,
-            toggleExpansionCards(),
-        );
-        newState = gameReducer(newState, toggleDeckTracking());
-        newState = gameReducer(newState, toggleHouse('Emperor'));
-
-        expect(newState).toEqual({
+        const oldState: Game = {
+            ...initialState,
             expansionCards: true,
             deckTracking: true,
-            houses: { ...initialState.houses, Emperor: true },
-        });
-
-        newState = gameReducer(newState, resetGame());
-
+            started: true,
+        };
+        const newState = gameReducer(oldState, resetGame());
         expect(newState).toEqual(initialState);
     });
 });
