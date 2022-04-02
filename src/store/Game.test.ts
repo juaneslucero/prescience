@@ -2,6 +2,7 @@ import { ENEMY_HOUSES_NAMES } from 'data/Houses';
 import {
     gameReducer,
     initialState,
+    resetGame,
     toggleDeckTracking,
     toggleExpansionCards,
     toggleHouse,
@@ -73,5 +74,26 @@ describe('Tests toggleHouse reducer', () => {
                 houses: { ...initialState.houses, [house]: false },
             });
         });
+    });
+});
+
+describe('Tests resetGame reducer', () => {
+    it('Test reset game', () => {
+        let newState: GameState = gameReducer(
+            initialState,
+            toggleExpansionCards(),
+        );
+        newState = gameReducer(newState, toggleDeckTracking());
+        newState = gameReducer(newState, toggleHouse('Emperor'));
+
+        expect(newState).toEqual({
+            expansionCards: true,
+            deckTracking: true,
+            houses: { ...initialState.houses, Emperor: true },
+        });
+
+        newState = gameReducer(newState, resetGame());
+
+        expect(newState).toEqual(initialState);
     });
 });

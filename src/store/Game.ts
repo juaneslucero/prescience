@@ -26,9 +26,15 @@ export const gameSlice = createSlice({
         toggleHouse: (state, house: PayloadAction<EnemyHouseName>) => {
             state.houses[house.payload] = !state.houses[house.payload];
         },
+        resetGame: () => initialState,
     },
 });
 
-export const { toggleExpansionCards, toggleDeckTracking, toggleHouse } = gameSlice.actions;
+export const {
+    toggleExpansionCards,
+    toggleDeckTracking,
+    toggleHouse,
+    resetGame,
+} = gameSlice.actions;
 
 export const gameReducer = gameSlice.reducer;
