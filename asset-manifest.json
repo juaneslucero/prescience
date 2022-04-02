@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/prescience/static/css/main.5c97dffd.css",
-    "main.js": "/prescience/static/js/main.76d38f7c.js",
+    "main.js": "/prescience/static/js/main.61afa2cc.js",
     "static/media/atreides.svg": "/prescience/static/media/atreides.fdcb6c7605455d5f498eee4e5a844f09.svg",
     "index.html": "/prescience/index.html",
     "main.5c97dffd.css.map": "/prescience/static/css/main.5c97dffd.css.map",
-    "main.76d38f7c.js.map": "/prescience/static/js/main.76d38f7c.js.map"
+    "main.61afa2cc.js.map": "/prescience/static/js/main.61afa2cc.js.map"
   },
   "entrypoints": [
     "static/css/main.5c97dffd.css",
-    "static/js/main.76d38f7c.js"
+    "static/js/main.61afa2cc.js"
   ]
 }
