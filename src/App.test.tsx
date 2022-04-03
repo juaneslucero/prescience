@@ -1,8 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithStore } from 'utils/TestUtils';
 import App from './App';
 
 it('Test renders iconic line', () => {
-    render(<App />);
+    renderWithStore(<App />);
     const pElement = screen.getByText(/THE SPICE MUST FLOW/i);
     expect(pElement).toBeInTheDocument();
 });
@@ -22,7 +23,7 @@ describe('Tests conditionally rendering if in development', () => {
     it('Test renders if it is development view', () => {
         //@ts-ignore
         process.env.NODE_ENV = 'development';
-        render(<App />);
+        renderWithStore(<App />);
         const pElement = screen.getByText(/This is the development view./i);
         expect(pElement).toBeInTheDocument();
     });
@@ -30,7 +31,7 @@ describe('Tests conditionally rendering if in development', () => {
     it('Test it does not render if it is not development view', () => {
         //@ts-ignore
         process.env.NODE_ENV = 'production';
-        render(<App />);
+        renderWithStore(<App />);
         const pElement = screen.queryByText('This is the development view.');
         expect(pElement).toBe(null);
     });
